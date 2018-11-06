@@ -3,7 +3,7 @@ package com.luxury.model;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.truemoney.walletgw.persistence.model.Product;
+import com.luxury.persistence.model.Product;
 
 public class UserDetail {
 
