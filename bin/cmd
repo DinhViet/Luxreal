@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -e
+
+exec /usr/bin/java -javaagent:/java-app/vendor/newrelic.jar ${JAVA_OPTS} -cp . org.springframework.boot.loader.JarLauncher

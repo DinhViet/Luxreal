@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+version=$1
+
+if ! git diff-index --quiet HEAD -- &>/dev/null; then
+    echo 'Dirty working copy detected. Please commit/stash uncommitted changes first!'
+    exit 1
+fi
+
+if git rev-parse $version &>/dev/null; then
+    echo "$version exists. Choose another one!"
+    exit 2
+fi
+
+git tag -a $version -m "Version $version"
