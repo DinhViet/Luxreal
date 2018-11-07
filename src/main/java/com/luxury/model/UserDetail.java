@@ -1,7 +1,7 @@
 package com.luxury.model;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.ArrayList;
 
 import com.luxury.persistence.model.Product;
 
@@ -9,17 +9,13 @@ public class UserDetail {
 
 	private String userName;
 	
-	private String passWord;
-	
-	private String token;
-	
 	private String dateOfBirth;
 	
 	private String urlIcon;
 	
 	private BigDecimal ratePoint;
 	
-	private List<Product> product;
+	private ArrayList<Product> product;
 
 	public String getUserName() {
 		return userName;
@@ -27,22 +23,6 @@ public class UserDetail {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-
-	public String getPassWord() {
-		return passWord;
-	}
-
-	public void setPassWord(String passWord) {
-		this.passWord = passWord;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
 	}
 
 	public String getDateOfBirth() {
@@ -69,12 +49,11 @@ public class UserDetail {
 		this.ratePoint = ratePoint;
 	}
 
-	public List<Product> getProduct() {
+	public ArrayList<Product> getProduct() {
 		return product;
 	}
 
-	public void setProduct(List<Product> product) {
+	public void setProduct(ArrayList<Product> product) {
 		this.product = product;
 	}
-	
 }

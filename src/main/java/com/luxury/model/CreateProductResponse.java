@@ -1,22 +1,10 @@
 package com.luxury.model;
 
-public class LoginResponse {
+public class CreateProductResponse {
 
-	private String token;
-	
 	private String respCode;
 	
 	private String description;
-	
-	private String name;
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
 
 	public String getRespCode() {
 		return respCode;
@@ -32,14 +20,6 @@ public class LoginResponse {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 	
 	

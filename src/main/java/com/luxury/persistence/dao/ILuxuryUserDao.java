@@ -13,6 +13,6 @@ public interface ILuxuryUserDao {
 	
 	 User login(LoginRequest request);
 	 
-	 User getDetail(LoginRequest request);
-	
+	 User getDetail(String token);
+	 
 }

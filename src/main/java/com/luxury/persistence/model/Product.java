@@ -28,6 +28,9 @@ public class Product extends GeneratedIdEntry{
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	public static final String STATUS_SELL = "SELL";
+	public static final String STATUS_REJECT = "REJECT";
+	
 	@Column(name = "product_code", length = 32)
 	private String productCode;
 	

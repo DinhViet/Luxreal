@@ -1,13 +1,20 @@
 package com.luxury.persistence.dao.impl;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.luxury.framework.persistence.hibernate.dao.GeneratedIdDAOHbnImpl;
+import com.luxury.model.GetProductRequest;
 import com.luxury.model.LoginRequest;
 import com.luxury.persistence.dao.ILuxuryUserDao;
+import com.luxury.persistence.model.Product;
 import com.luxury.persistence.model.User;
 
 @Repository
@@ -51,11 +58,11 @@ public class LuxuryUserDaoImpl extends GeneratedIdDAOHbnImpl<User> implements IL
 	}
 
 	@Override
-	public User getDetail(LoginRequest request) {
+	public User getDetail(String token) {
 		Criteria criteria = null;
 		try {
 			criteria = getSession().createCriteria(User.class);
-			criteria.add(Restrictions.eq("token", request.getToken()));
+			criteria.add(Restrictions.eq("token", token));
 			return (User) criteria.uniqueResult();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -75,5 +82,4 @@ public class LuxuryUserDaoImpl extends GeneratedIdDAOHbnImpl<User> implements IL
 		}
 		return 1;
 	}
-
 }

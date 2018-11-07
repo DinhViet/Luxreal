@@ -94,6 +94,7 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService{
 			response.setRespCode(ErrorMessages.SUCCESS.code);
 			response.setDescription(ErrorMessages.SUCCESS.message);
 			response.setToken(user.getToken());
+			response.setName(user.getName());
 		}else{
 			response.setRespCode(ErrorMessages.INVALID_USERNAME_PASSWORD.code);
 			response.setDescription(ErrorMessages.INVALID_USERNAME_PASSWORD.message);
@@ -111,7 +112,7 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService{
 			response.setStatus(status);
 			return response;
 		}
-		User user = userDao.getDetail(request);
+		User user = userDao.getDetail(request.getToken());
 		if(user!=null){
 			UserDetail userDetail = new UserDetail(); 
 			userDetail.setDateOfBirth(user.getDateOfBirth());
