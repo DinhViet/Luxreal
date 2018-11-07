@@ -28,7 +28,7 @@ import com.luxury.model.Status;
 @RequestMapping("api/v1")
 public class LuxuryCustomerController {
 
-	private static Logger logger = Logger.getLogger(WalletEcomRestController.class);
+	private static Logger logger = Logger.getLogger(LuxuryCustomerController.class);
 	
 	@Autowired
 	ILuxuryUserService userService;
