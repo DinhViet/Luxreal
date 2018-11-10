@@ -23,6 +23,8 @@ import com.luxury.model.DetailUserResponse;
 import com.luxury.model.LoginRequest;
 import com.luxury.model.LoginResponse;
 import com.luxury.model.Status;
+import com.luxury.model.UpdateUserRequest;
+import com.luxury.model.UpdateUserResponse;
 
 @Controller
 @RequestMapping("api/v1")
@@ -38,9 +40,7 @@ public class LuxuryCustomerController {
 	public CreateUserResponse createUser( @Valid @RequestBody CreateUserRequest request, BindingResult bindingResult,HttpServletRequest httpServletRequest) {
 		CreateUserResponse response = null;
 		try {
-			
-			logger.info("Request login from merchant  : "+ LoggingUtils.writeObjectAsJson(request));
-			
+			logger.info("Request create user  : "+ LoggingUtils.writeObjectAsJson(request));
 			StringBuffer msgError = new StringBuffer();
 			if(bindingResult.hasErrors()){
 				
@@ -84,7 +84,7 @@ public class LuxuryCustomerController {
 		LoginResponse response = null;
 		try {
 			
-			logger.info("Request login from merchant  : "+ LoggingUtils.writeObjectAsJson(request));
+			logger.info("Request login : "+ LoggingUtils.writeObjectAsJson(request));
 			
 			StringBuffer msgError = new StringBuffer();
 			if(bindingResult.hasErrors()){
@@ -109,8 +109,6 @@ public class LuxuryCustomerController {
 			
 			response = userService.login(request);
 			
-			logger.info("Response login from backend  : "+ LoggingUtils.writeObjectAsJson(response));
-			
 			return response;
 			
 		} catch (Exception e) {
@@ -129,7 +127,7 @@ public class LuxuryCustomerController {
 		DetailUserResponse response = null;
 		try {
 			
-			logger.info("Request login from merchant  : "+ LoggingUtils.writeObjectAsJson(request));
+			logger.info("Request getDetailUser  : "+ LoggingUtils.writeObjectAsJson(request));
 			
 			response = userService.getDetail(request);
 			
@@ -143,6 +141,27 @@ public class LuxuryCustomerController {
 			status.setRespCode(ErrorMessages.UNKNOW_ERROR.code);
 			status.setDescription(ErrorMessages.UNKNOW_ERROR.message);
 			response.setStatus(status);;
+			return response;
+		}
+	}
+	
+	@RequestMapping(value = "/updateUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public UpdateUserResponse updateUser(@RequestBody UpdateUserRequest request,HttpServletRequest httpServletRequest) {
+		UpdateUserResponse response = null;
+		try {
+			logger.info("Request udpate : "+ LoggingUtils.writeObjectAsJson(request));
+			
+			response = userService.updateUser(request);
+			
+			return response;
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+			response = new UpdateUserResponse();
+			response.setRespCode(ErrorMessages.UNKNOW_ERROR.code);
+			response.setDescription(ErrorMessages.UNKNOW_ERROR.message);
 			return response;
 		}
 	}

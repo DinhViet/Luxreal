@@ -30,8 +30,7 @@ public class CreateUserRequest {
 
 	@Size(max = 32, message = "mail độ dài không hợp lệ")
 	private String mail;
-
-
+	
 	public String getUserName() {
 		return userName;
 	}

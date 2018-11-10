@@ -10,8 +10,12 @@ public interface ILuxuryUserDao {
 	 boolean updateUser(User user);
 	 
 	 long checkUserName(String userName);
+	 
+	 long checkMail(String mail);
 	
 	 User login(LoginRequest request);
+	 
+	 User loginEmail(LoginRequest request);
 	 
 	 User getDetail(String token);
 	 

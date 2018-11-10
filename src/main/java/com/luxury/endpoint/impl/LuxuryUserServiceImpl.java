@@ -24,6 +24,8 @@ import com.luxury.model.LoginRequest;
 import com.luxury.model.LoginResponse;
 import com.luxury.model.ProductOfUser;
 import com.luxury.model.Status;
+import com.luxury.model.UpdateUserRequest;
+import com.luxury.model.UpdateUserResponse;
 import com.luxury.model.UserDetail;
 import com.luxury.persistence.dao.ILuxuryUserDao;
 import com.luxury.persistence.dao.SysSequenceDAO;
@@ -33,31 +35,33 @@ import com.luxury.persistence.model.User;
 
 @Service
 @Transactional
-public class LuxuryUserServiceImpl implements ILuxuryUserService{
+public class LuxuryUserServiceImpl implements ILuxuryUserService {
 
 	@Autowired
 	ILuxuryUserDao userDao;
-	
+
 	@Autowired
-    SysSequenceDAO sysSequenceDAO;
-	
+	SysSequenceDAO sysSequenceDAO;
+
 	@Override
 	public CreateUserResponse createUser(CreateUserRequest request) {
 		CreateUserResponse response = new CreateUserResponse();
-		long checkUserName = userDao.checkUserName(request.getUserName());
-		if(checkUserName > 0){
+		long checkUserName = userDao.checkUserName(request.getUserName().trim());
+
+		long checkMail = userDao.checkMail(request.getMail().trim());
+		if (checkUserName > 0 || checkMail > 0) {
 			response.setRespCode(ErrorMessages.INVALID_USERNAME.code);
 			response.setDescription(ErrorMessages.INVALID_USERNAME.message);
 			return response;
 		}
 		User user = new User();
-		user.setName(request.getName());
-		user.setMail(request.getMail());
+		user.setName(request.getName().trim());
+		user.setMail(request.getMail().trim());
 		user.setCreationDate(new Date());
 		user.setActive(true);
 		user.setLastUpdate(new Date());
 		user.setUrlIcon(request.getUrlIcon());
-		String passWord = Utils.encryptToMD5("PASS"+request.getPassWord());
+		String passWord = Utils.encryptToMD5("PASS" + request.getPassWord().trim());
 		user.setPassWord(passWord);
 		user.setUserName(request.getUserName());
 		user.setDateOfBirth(request.getDateOfBirth());
@@ -65,11 +69,11 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService{
 		String token = Utils.genUId();
 		user.setToken(token);
 		boolean createUser = userDao.createUser(user);
-		if(createUser){
+		if (createUser) {
 			response.setRespCode(ErrorMessages.SUCCESS.code);
 			response.setDescription(ErrorMessages.SUCCESS.message);
 			response.setToken(token);
-		}else{
+		} else {
 			response.setRespCode(ErrorMessages.UNKNOW_ERROR.code);
 			response.setDescription(ErrorMessages.UNKNOW_ERROR.message);
 		}
@@ -85,17 +89,32 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService{
 	@Override
 	public LoginResponse login(LoginRequest request) {
 		LoginResponse response = new LoginResponse();
-		String passWord = Utils.encryptToMD5("PASS"+request.getPassWord());
-		request.setPassWord(passWord);
-		User user = userDao.login(request);
-		if(user!=null){
-			response.setRespCode(ErrorMessages.SUCCESS.code);
-			response.setDescription(ErrorMessages.SUCCESS.message);
-			response.setToken(user.getToken());
-			response.setName(user.getName());
-		}else{
-			response.setRespCode(ErrorMessages.INVALID_USERNAME_PASSWORD.code);
-			response.setDescription(ErrorMessages.INVALID_USERNAME_PASSWORD.message);
+		if (request.getUserName().contains("@")) {
+			String passWord = Utils.encryptToMD5("PASS" + request.getPassWord());
+			request.setPassWord(passWord);
+			User user = userDao.loginEmail(request);
+			if (user != null) {
+				response.setRespCode(ErrorMessages.SUCCESS.code);
+				response.setDescription(ErrorMessages.SUCCESS.message);
+				response.setToken(user.getToken());
+				response.setName(user.getName());
+			} else {
+				response.setRespCode(ErrorMessages.INVALID_USERNAME_PASSWORD.code);
+				response.setDescription(ErrorMessages.INVALID_USERNAME_PASSWORD.message);
+			}
+		} else {
+			String passWord = Utils.encryptToMD5("PASS" + request.getPassWord());
+			request.setPassWord(passWord);
+			User user = userDao.login(request);
+			if (user != null) {
+				response.setRespCode(ErrorMessages.SUCCESS.code);
+				response.setDescription(ErrorMessages.SUCCESS.message);
+				response.setToken(user.getToken());
+				response.setName(user.getName());
+			} else {
+				response.setRespCode(ErrorMessages.INVALID_USERNAME_PASSWORD.code);
+				response.setDescription(ErrorMessages.INVALID_USERNAME_PASSWORD.message);
+			}
 		}
 		return response;
 	}
@@ -104,15 +123,15 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService{
 	public DetailUserResponse getDetail(LoginRequest request) {
 		DetailUserResponse response = new DetailUserResponse();
 		Status status = new Status();
-		if(StringUtils.isEmpty(request.getToken())){
+		if (StringUtils.isEmpty(request.getToken())) {
 			status.setRespCode(ErrorMessages.INVALID_PARAM.code);
 			status.setDescription(ErrorMessages.INVALID_PARAM.message);
 			response.setStatus(status);
 			return response;
 		}
 		User user = userDao.getDetail(request.getToken());
-		if(user!=null){
-			UserDetail userDetail = new UserDetail(); 
+		if (user != null) {
+			UserDetail userDetail = new UserDetail();
 			userDetail.setDateOfBirth(user.getDateOfBirth());
 			userDetail.setUrlIcon(user.getUrlIcon());
 			userDetail.setRatePoint(user.getRatePoint());
@@ -127,7 +146,7 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService{
 				List<Image> listImages = new ArrayList<>();
 				Set<ImageProduct> setimage = product.getImageProduct();
 				for (ImageProduct imageProduct : setimage) {
-					Image image =  new Image();
+					Image image = new Image();
 					image.setImage(imageProduct.getUrlImage());
 					listImages.add(image);
 				}
@@ -139,10 +158,47 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService{
 			status.setDescription(ErrorMessages.SUCCESS.message);
 			response.setStatus(status);
 			response.setUser(userDetail);
-		}else{
+		} else {
 			status.setRespCode(ErrorMessages.INVALID_PARAM.code);
 			status.setDescription(ErrorMessages.INVALID_PARAM.message);
 			response.setStatus(status);
+		}
+		return response;
+	}
+
+	@Override
+	public UpdateUserResponse updateUser(UpdateUserRequest request) {
+		UpdateUserResponse response = new UpdateUserResponse();
+		if (StringUtils.isEmpty(request.getToken())) {
+			response.setRespCode(ErrorMessages.INVALID_PARAM.code);
+			response.setDescription(ErrorMessages.INVALID_PARAM.message);
+			return response;
+		}
+		User user = userDao.getDetail(request.getToken());
+		if (user != null) {
+			if (!StringUtils.isEmpty(request.getName())) {
+				user.setName(request.getName());
+			}
+			if (!StringUtils.isEmpty(request.getUrlIcon())) {
+				user.setName(request.getUrlIcon());
+			}
+			if (!StringUtils.isEmpty(request.getPassWord())) {
+				String passWord = Utils.encryptToMD5("PASS" + request.getPassWord().trim());
+				user.setPassWord(passWord);
+			}
+			boolean save = userDao.updateUser(user);
+			if (save) {
+				response.setRespCode(ErrorMessages.SUCCESS.code);
+				response.setDescription(ErrorMessages.SUCCESS.message);
+				response.setToken(user.getToken());
+				response.setName(user.getName());
+			} else {
+				response.setRespCode(ErrorMessages.UNKNOW_ERROR.code);
+				response.setDescription(ErrorMessages.UNKNOW_ERROR.message);
+			}
+		} else {
+			response.setRespCode(ErrorMessages.INVALID_PARAM.code);
+			response.setDescription(ErrorMessages.INVALID_PARAM.message);
 		}
 		return response;
 	}
