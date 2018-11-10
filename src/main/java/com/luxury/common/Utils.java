@@ -26,8 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -106,7 +104,7 @@ public class Utils {
     return getFirstDayOfQuarter(quarter, year);
   }
   
-  public static Date getDateTimeZone7(Date date){
+  /*public static Date getDateTimeZone7(Date date){
 	  Date currentDate = new Date();
 	  try {
 		  DateTime now = new DateTime(date.getTime(),DateTimeZone.forID("Asia/Ho_Chi_Minh")); 
@@ -115,7 +113,7 @@ public class Utils {
 			e.printStackTrace();
 		}
 	  return currentDate;
-  }
+  }*/
 
   public static Date getFirstDayOfQuarter(int quarter, int year) {
     int month = 1;

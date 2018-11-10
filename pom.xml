@@ -97,10 +97,6 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.newrelic.agent.java</groupId>
 			<artifactId>newrelic-java</artifactId>
 			<version>3.36.0</version>
