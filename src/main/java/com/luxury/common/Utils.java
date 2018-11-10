@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +56,10 @@ public class Utils {
 		  c.setTime(new Date()); 
 		return  c.getTimeInMillis();
 	  }
+	 
+	 public static String genUId(){
+		 return UUID.randomUUID().toString();
+	 }
 	
 	public static <T> String convertToString(T t) {
 		return smGson.toJson(t);

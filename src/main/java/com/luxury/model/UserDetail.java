@@ -2,12 +2,13 @@ package com.luxury.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-
-import com.luxury.persistence.model.Product;
+import java.util.List;
 
 public class UserDetail {
 
 	private String userName;
+	
+	private String name;
 	
 	private String dateOfBirth;
 	
@@ -15,7 +16,7 @@ public class UserDetail {
 	
 	private BigDecimal ratePoint;
 	
-	private ArrayList<Product> product;
+	private List<ProductOfUser> products;
 
 	public String getUserName() {
 		return userName;
@@ -49,11 +50,22 @@ public class UserDetail {
 		this.ratePoint = ratePoint;
 	}
 
-	public ArrayList<Product> getProduct() {
-		return product;
+	public List<ProductOfUser> getProducts() {
+		return products;
 	}
 
-	public void setProduct(ArrayList<Product> product) {
-		this.product = product;
+	public void setProducts(List<ProductOfUser> products) {
+		this.products = products;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+
 }

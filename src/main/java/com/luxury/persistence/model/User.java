@@ -44,6 +44,9 @@ public class User extends GeneratedIdEntry{
 	@Column(name = "url_icon", length = 500)
 	private String urlIcon;
 	
+	@Column(name = "mail", length = 32)
+	private String mail;
+	
 	@Column(name = "rate_point")
 	private BigDecimal ratePoint;
 	
@@ -114,6 +117,12 @@ public class User extends GeneratedIdEntry{
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
 }

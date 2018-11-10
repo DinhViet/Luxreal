@@ -133,8 +133,6 @@ public class LuxuryCustomerController {
 			
 			response = userService.getDetail(request);
 			
-			logger.info("Response login from backend  : "+ LoggingUtils.writeObjectAsJson(response));
-			
 			return response;
 			
 		} catch (Exception e) {

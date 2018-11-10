@@ -3,10 +3,13 @@ package com.luxury.endpoint.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +19,15 @@ import com.luxury.endpoint.ILuxuryUserService;
 import com.luxury.model.CreateUserRequest;
 import com.luxury.model.CreateUserResponse;
 import com.luxury.model.DetailUserResponse;
+import com.luxury.model.Image;
 import com.luxury.model.LoginRequest;
 import com.luxury.model.LoginResponse;
+import com.luxury.model.ProductOfUser;
 import com.luxury.model.Status;
 import com.luxury.model.UserDetail;
 import com.luxury.persistence.dao.ILuxuryUserDao;
 import com.luxury.persistence.dao.SysSequenceDAO;
+import com.luxury.persistence.model.ImageProduct;
 import com.luxury.persistence.model.Product;
 import com.luxury.persistence.model.User;
 
@@ -46,6 +52,7 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService{
 		}
 		User user = new User();
 		user.setName(request.getName());
+		user.setMail(request.getMail());
 		user.setCreationDate(new Date());
 		user.setActive(true);
 		user.setLastUpdate(new Date());
@@ -55,7 +62,7 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService{
 		user.setUserName(request.getUserName());
 		user.setDateOfBirth(request.getDateOfBirth());
 		user.setRatePoint(BigDecimal.ZERO);
-		String token = generateString();
+		String token = Utils.genUId();
 		user.setToken(token);
 		boolean createUser = userDao.createUser(user);
 		if(createUser){
@@ -73,15 +80,6 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService{
 	public CreateUserResponse updateUser(CreateUserRequest request) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public String generateString() {
-		long timeMilise = Utils.getMiliseconds();
-		
-		long timeRequestId = sysSequenceDAO.getNextSequence("seq_id_entity", 0l);
-		
-		return String.valueOf(timeRequestId) + timeMilise;
 	}
 
 	@Override
@@ -119,8 +117,24 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService{
 			userDetail.setUrlIcon(user.getUrlIcon());
 			userDetail.setRatePoint(user.getRatePoint());
 			userDetail.setUserName(user.getUserName());
-			ArrayList<Product> listProduct = new ArrayList<Product>(user.getProduct());
-			userDetail.setProduct(listProduct);
+			userDetail.setName(user.getName());
+			List<ProductOfUser> listProductJ = new ArrayList<>();
+			Set<Product> listProduct = user.getProduct();
+			for (Product product : listProduct) {
+				ProductOfUser productJ = new ProductOfUser();
+				BeanUtils.copyProperties(product, productJ);
+				productJ.setProductName(product.getProductName());
+				List<Image> listImages = new ArrayList<>();
+				Set<ImageProduct> setimage = product.getImageProduct();
+				for (ImageProduct imageProduct : setimage) {
+					Image image =  new Image();
+					image.setImage(imageProduct.getUrlImage());
+					listImages.add(image);
+				}
+				productJ.setImages(listImages);
+				listProductJ.add(productJ);
+			}
+			userDetail.setProducts(listProductJ);
 			status.setRespCode(ErrorMessages.SUCCESS.code);
 			status.setDescription(ErrorMessages.SUCCESS.message);
 			response.setStatus(status);

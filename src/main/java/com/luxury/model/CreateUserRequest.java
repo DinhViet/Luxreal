@@ -26,6 +26,10 @@ public class CreateUserRequest {
 	
 	@Size(max = 255, message = "urlIcon độ dài không hợp lệ")
 	private String urlIcon;
+	
+
+	@Size(max = 32, message = "mail độ dài không hợp lệ")
+	private String mail;
 
 
 	public String getUserName() {
@@ -75,6 +79,14 @@ public class CreateUserRequest {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
 	}
 	
 }

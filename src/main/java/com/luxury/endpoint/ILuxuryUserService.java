@@ -12,8 +12,6 @@ public interface ILuxuryUserService {
 	
 	CreateUserResponse updateUser(CreateUserRequest request);
 	
-	String generateString();
-	
 	LoginResponse login(LoginRequest request);
 	
 	DetailUserResponse getDetail(LoginRequest request);

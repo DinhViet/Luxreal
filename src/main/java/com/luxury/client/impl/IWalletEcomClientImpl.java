@@ -47,15 +47,6 @@ public class IWalletEcomClientImpl implements IWalletEcomClient {
 			RestTemplate restTemplate = new RestTemplate(ssl);
 			
 			try {
-			
-				String user = SharedConstants.WALLETGW_CONNECTOR_USER_NAME;
-				String password = SharedConstants.WALLETGW_CONNECTOR_PASSWORD;
-				
-				final List<ClientHttpRequestInterceptor> interceptors = new ArrayList<ClientHttpRequestInterceptor>();
-			       interceptors.add( new BasicAuthInterceptor(user, password) );
-		 
-			    restTemplate.setInterceptors(interceptors);
-				
 				HttpHeaders headers = new HttpHeaders();
 				headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 				headers.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36");
