@@ -61,11 +61,14 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 		user.setActive(true);
 		user.setLastUpdate(new Date());
 		user.setUrlIcon(request.getUrlIcon());
-		String passWord = Utils.encryptToMD5("PASS" + request.getPassWord().trim());
+		String passWord = Utils.encryptSHA256("PASS" + request.getPassWord().trim());
 		user.setPassWord(passWord);
 		user.setUserName(request.getUserName());
 		user.setDateOfBirth(request.getDateOfBirth());
 		user.setRatePoint(BigDecimal.ZERO);
+		user.setWebsite(request.getWebsite());
+		user.setDescription(request.getDescription());
+		user.setPhoneNumber(request.getPhoneNumber());
 		String token = Utils.genUId();
 		user.setToken(token);
 		boolean createUser = userDao.createUser(user);
@@ -90,7 +93,7 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 	public LoginResponse login(LoginRequest request) {
 		LoginResponse response = new LoginResponse();
 		if (request.getUserName().contains("@")) {
-			String passWord = Utils.encryptToMD5("PASS" + request.getPassWord());
+			String passWord = Utils.encryptSHA256("PASS" + request.getPassWord());
 			request.setPassWord(passWord);
 			User user = userDao.loginEmail(request);
 			if (user != null) {
@@ -103,7 +106,7 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 				response.setDescription(ErrorMessages.INVALID_USERNAME_PASSWORD.message);
 			}
 		} else {
-			String passWord = Utils.encryptToMD5("PASS" + request.getPassWord());
+			String passWord = Utils.encryptSHA256("PASS" + request.getPassWord());
 			request.setPassWord(passWord);
 			User user = userDao.login(request);
 			if (user != null) {
@@ -137,6 +140,9 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 			userDetail.setRatePoint(user.getRatePoint());
 			userDetail.setUserName(user.getUserName());
 			userDetail.setName(user.getName());
+			userDetail.setWebsite(user.getWebsite());
+			userDetail.setDescription(user.getDescription());
+			userDetail.setPhoneNumber(user.getPhoneNumber());
 			List<ProductOfUser> listProductJ = new ArrayList<>();
 			Set<Product> listProduct = user.getProduct();
 			for (Product product : listProduct) {
@@ -147,7 +153,8 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 				Set<ImageProduct> setimage = product.getImageProduct();
 				for (ImageProduct imageProduct : setimage) {
 					Image image = new Image();
-					image.setImage(imageProduct.getUrlImage());
+					image.setImage_hd(imageProduct.getUrlImage());
+					image.setImage_sd(imageProduct.getUrlImageSD());
 					listImages.add(image);
 				}
 				productJ.setImages(listImages);
@@ -180,11 +187,20 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 				user.setName(request.getName());
 			}
 			if (!StringUtils.isEmpty(request.getUrlIcon())) {
-				user.setName(request.getUrlIcon());
+				user.setUrlIcon(request.getUrlIcon());
 			}
 			if (!StringUtils.isEmpty(request.getPassWord())) {
-				String passWord = Utils.encryptToMD5("PASS" + request.getPassWord().trim());
+				String passWord = Utils.encryptSHA256("PASS" + request.getPassWord().trim());
 				user.setPassWord(passWord);
+			}
+			if(!StringUtils.isEmpty(request.getWebsite())){
+				user.setWebsite(request.getWebsite());
+			}
+			if(!StringUtils.isEmpty(request.getPhoneNumber())){
+				user.setPhoneNumber(request.getPhoneNumber());
+			}
+			if(!StringUtils.isEmpty(request.getDescription())){
+				user.setDescription(request.getDescription());
 			}
 			boolean save = userDao.updateUser(user);
 			if (save) {

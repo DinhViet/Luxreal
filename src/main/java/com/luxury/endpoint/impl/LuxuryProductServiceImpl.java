@@ -63,7 +63,8 @@ public class LuxuryProductServiceImpl implements ILuxuryProductService{
 				imProduct.setActive(true);
 				imProduct.setLastUpdate(new Date());
 				imProduct.setProduct(product);
-				imProduct.setUrlImage(image.getImage());
+				imProduct.setUrlImage(image.getImage_hd());
+				imProduct.setUrlImageSD(image.getImage_sd());
 				setImage.add(imProduct);
 			}
 			product.setImageProduct(setImage);
@@ -99,7 +100,8 @@ public class LuxuryProductServiceImpl implements ILuxuryProductService{
 			Set<ImageProduct> setimage = product.getImageProduct();
 			for (ImageProduct imageProduct : setimage) {
 				Image image =  new Image();
-				image.setImage(imageProduct.getUrlImage());
+				image.setImage_hd(imageProduct.getUrlImage());
+				image.setImage_sd(imageProduct.getUrlImageSD());
 				listImages.add(image);
 			}
 			ProductJson productJson = new ProductJson();

@@ -26,10 +26,19 @@ public class CreateUserRequest {
 	
 	@Size(max = 255, message = "urlIcon độ dài không hợp lệ")
 	private String urlIcon;
-	
 
 	@Size(max = 32, message = "mail độ dài không hợp lệ")
+	@NotBlank(message = "mail không được null")
 	private String mail;
+	
+	@Size(max = 255, message = "website độ dài không hợp lệ")
+	private String website;
+	
+	@Size(max = 255, message = "description độ dài không hợp lệ")
+	private String description;
+	
+	@Size(max = 15, message = "phoneNumber độ dài không hợp lệ")
+	private String phoneNumber;
 	
 	public String getUserName() {
 		return userName;
@@ -86,6 +95,30 @@ public class CreateUserRequest {
 
 	public void setMail(String mail) {
 		this.mail = mail;
+	}
+	
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 	
 }

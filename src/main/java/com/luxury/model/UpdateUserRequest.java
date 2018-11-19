@@ -9,6 +9,12 @@ public class UpdateUserRequest {
 	private String urlIcon;
 	
 	private String passWord;
+	
+	private String website;
+	
+	private String description ;
+	
+	private String phoneNumber;
 
 	public String getToken() {
 		return token;
@@ -41,5 +47,31 @@ public class UpdateUserRequest {
 	public void setPassWord(String passWord) {
 		this.passWord = passWord;
 	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+	
+	
 	
 }

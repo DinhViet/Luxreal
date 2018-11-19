@@ -50,6 +50,21 @@ public class User extends GeneratedIdEntry{
 	@Column(name = "rate_point")
 	private BigDecimal ratePoint;
 	
+	@Column(name = "website" ,length = 255)
+	private String website;
+	
+	@Column(name = "description" ,length = 255)
+	private String description;
+	
+	@Column(name = "phone_number")
+	private String phoneNumber;
+	
+	@Column(name = "followers",length = 255)
+	private String followers;
+	
+	@Column(name = "num_post",length = 255)
+	private String numPost ;
+	
 	@OneToMany(fetch = FetchType.LAZY,mappedBy="users")
 	@Cascade(value = CascadeType.ALL)
 	private Set<Product> product = new HashSet<Product>();
@@ -125,4 +140,47 @@ public class User extends GeneratedIdEntry{
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(String followers) {
+		this.followers = followers;
+	}
+
+	public String getNumPost() {
+		return numPost;
+	}
+
+	public void setNumPost(String numPost) {
+		this.numPost = numPost;
+	}
+	
+	
+	
 }
