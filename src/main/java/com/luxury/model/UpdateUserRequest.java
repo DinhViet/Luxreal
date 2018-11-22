@@ -8,8 +8,6 @@ public class UpdateUserRequest {
 	
 	private String urlIcon;
 	
-	private String passWord;
-	
 	private String website;
 	
 	private String description ;
@@ -38,14 +36,6 @@ public class UpdateUserRequest {
 
 	public void setUrlIcon(String urlIcon) {
 		this.urlIcon = urlIcon;
-	}
-
-	public String getPassWord() {
-		return passWord;
-	}
-
-	public void setPassWord(String passWord) {
-		this.passWord = passWord;
 	}
 
 	public String getWebsite() {

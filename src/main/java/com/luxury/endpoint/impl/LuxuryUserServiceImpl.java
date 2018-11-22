@@ -24,6 +24,7 @@ import com.luxury.model.LoginRequest;
 import com.luxury.model.LoginResponse;
 import com.luxury.model.ProductOfUser;
 import com.luxury.model.Status;
+import com.luxury.model.UpdatePassWordRequest;
 import com.luxury.model.UpdateUserRequest;
 import com.luxury.model.UpdateUserResponse;
 import com.luxury.model.UserDetail;
@@ -189,10 +190,6 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 			if (!StringUtils.isEmpty(request.getUrlIcon())) {
 				user.setUrlIcon(request.getUrlIcon());
 			}
-			if (!StringUtils.isEmpty(request.getPassWord())) {
-				String passWord = Utils.encryptSHA256("PASS" + request.getPassWord().trim());
-				user.setPassWord(passWord);
-			}
 			if(!StringUtils.isEmpty(request.getWebsite())){
 				user.setWebsite(request.getWebsite());
 			}
@@ -202,6 +199,7 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 			if(!StringUtils.isEmpty(request.getDescription())){
 				user.setDescription(request.getDescription());
 			}
+			user.setLastUpdate(new Date());
 			boolean save = userDao.updateUser(user);
 			if (save) {
 				response.setRespCode(ErrorMessages.SUCCESS.code);
@@ -215,6 +213,37 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 		} else {
 			response.setRespCode(ErrorMessages.INVALID_PARAM.code);
 			response.setDescription(ErrorMessages.INVALID_PARAM.message);
+		}
+		return response;
+	}
+
+	@Override
+	public UpdateUserResponse updatePassWord(UpdatePassWordRequest request) {
+		UpdateUserResponse response = new UpdateUserResponse();
+		if(StringUtils.isEmpty(request.getNewPassWord()) || StringUtils.isEmpty(request.getOldPassWord()) || StringUtils.isEmpty(request.getToken())){
+			response.setRespCode(ErrorMessages.INVALID_PARAM.code);
+			response.setDescription(ErrorMessages.INVALID_PARAM.message);
+			return response;
+		}
+		String passWord = Utils.encryptSHA256("PASS" + request.getOldPassWord().trim());
+		User user = userDao.getDetail(request.getToken(), passWord);
+		if(user!=null){
+			String newpassWord = Utils.encryptSHA256("PASS" + request.getNewPassWord().trim());
+			user.setPassWord(newpassWord);
+			user.setLastUpdate(new Date());
+			boolean save = userDao.updateUser(user);
+			if (save) {
+				response.setRespCode(ErrorMessages.SUCCESS.code);
+				response.setDescription(ErrorMessages.SUCCESS.message);
+				response.setToken(user.getToken());
+				response.setName(user.getName());
+			} else {
+				response.setRespCode(ErrorMessages.UNKNOW_ERROR.code);
+				response.setDescription(ErrorMessages.UNKNOW_ERROR.message);
+			}
+		}else{
+			response.setRespCode(ErrorMessages.INVALID_TOKEN_OR_PASSWORD.code);
+			response.setDescription(ErrorMessages.INVALID_TOKEN_OR_PASSWORD.message);
 		}
 		return response;
 	}

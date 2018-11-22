@@ -11,6 +11,7 @@ public enum ErrorMessages {
 	INVALID_AMOUNT("16", "Số tiền không hợp lệ"),
 	INVALID_SERVICE("08", "ServiceId không hợp lệ"),
 	INVALID_USERNAME_PASSWORD("01","UserName or PassWord không hợp lệ"),
+	INVALID_TOKEN_OR_PASSWORD("04","Token or password không hợp lệ"),
 	INVALID_USERNAME("03","UserName or Mail đã tồn tại");
 
     public String message;

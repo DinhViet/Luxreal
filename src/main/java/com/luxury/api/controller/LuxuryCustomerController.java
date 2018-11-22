@@ -23,6 +23,7 @@ import com.luxury.model.DetailUserResponse;
 import com.luxury.model.LoginRequest;
 import com.luxury.model.LoginResponse;
 import com.luxury.model.Status;
+import com.luxury.model.UpdatePassWordRequest;
 import com.luxury.model.UpdateUserRequest;
 import com.luxury.model.UpdateUserResponse;
 
@@ -165,6 +166,29 @@ public class LuxuryCustomerController {
 			return response;
 		}
 	}
+	
+	
+	@RequestMapping(value = "/update-password", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public UpdateUserResponse updatePassWord(@RequestBody UpdatePassWordRequest request,HttpServletRequest httpServletRequest) {
+		UpdateUserResponse response = null;
+		try {
+			logger.info("Request udpate : "+ LoggingUtils.writeObjectAsJson(request));
+			
+			response = userService.updatePassWord(request);
+			
+			return response;
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+			response = new UpdateUserResponse();
+			response.setRespCode(ErrorMessages.UNKNOW_ERROR.code);
+			response.setDescription(ErrorMessages.UNKNOW_ERROR.message);
+			return response;
+		}
+	}
+	
 	
 	
 }

@@ -1,20 +1,13 @@
 package com.luxury.persistence.dao.impl;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.luxury.framework.persistence.hibernate.dao.GeneratedIdDAOHbnImpl;
-import com.luxury.model.GetProductRequest;
 import com.luxury.model.LoginRequest;
 import com.luxury.persistence.dao.ILuxuryUserDao;
-import com.luxury.persistence.model.Product;
 import com.luxury.persistence.model.User;
 
 @Repository
@@ -33,7 +26,12 @@ public class LuxuryUserDaoImpl extends GeneratedIdDAOHbnImpl<User> implements IL
 
 	@Override
 	public boolean updateUser(User user) {
-		getSession().saveOrUpdate(user);
+		try {
+			getSession().saveOrUpdate(user);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
@@ -103,6 +101,20 @@ public class LuxuryUserDaoImpl extends GeneratedIdDAOHbnImpl<User> implements IL
 			criteria = getSession().createCriteria(User.class);
 			criteria.add(Restrictions.eq("mail", request.getUserName()));
 			criteria.add(Restrictions.eq("passWord", request.getPassWord()));
+			return (User) criteria.uniqueResult();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public User getDetail(String token, String passWord) {
+		Criteria criteria = null;
+		try {
+			criteria = getSession().createCriteria(User.class);
+			criteria.add(Restrictions.eq("token", token));
+			criteria.add(Restrictions.eq("passWord", passWord));
 			return (User) criteria.uniqueResult();
 		} catch (Exception e) {
 			e.printStackTrace();
