@@ -9,6 +9,7 @@ public enum ErrorMessages {
 	INVALID_PARAM("02", "Invalid token"),
 	UNKNOW_ERROR("99", "Có lỗi xảy ra"),
 	INVALID_AMOUNT("16", "Số tiền không hợp lệ"),
+	INVALID_TOKEN("05", "Token không hợp lệ"),
 	INVALID_SERVICE("08", "ServiceId không hợp lệ"),
 	INVALID_USERNAME_PASSWORD("01","UserName or PassWord không hợp lệ"),
 	INVALID_TOKEN_OR_PASSWORD("04","Token or password không hợp lệ"),

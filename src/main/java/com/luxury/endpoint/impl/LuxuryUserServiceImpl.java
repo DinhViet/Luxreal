@@ -127,13 +127,21 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 	public DetailUserResponse getDetail(LoginRequest request) {
 		DetailUserResponse response = new DetailUserResponse();
 		Status status = new Status();
-		if (StringUtils.isEmpty(request.getToken())) {
+		if (StringUtils.isEmpty(request.getToken()) || StringUtils.isEmpty(request.getUserName())) {
 			status.setRespCode(ErrorMessages.INVALID_PARAM.code);
 			status.setDescription(ErrorMessages.INVALID_PARAM.message);
 			response.setStatus(status);
 			return response;
 		}
-		User user = userDao.getDetail(request.getToken());
+		User userLogin = userDao.getDetail(request.getToken());
+		if(userLogin==null){
+			status.setRespCode(ErrorMessages.INVALID_TOKEN.code);
+			status.setDescription(ErrorMessages.INVALID_TOKEN.message);
+			response.setStatus(status);
+			return response;
+		}
+		
+		User user = userDao.getDetailbyUserName(request.getUserName());
 		if (user != null) {
 			UserDetail userDetail = new UserDetail();
 			userDetail.setDateOfBirth(user.getDateOfBirth());

@@ -9,11 +9,6 @@ import com.luxury.model.OutputMessage;
 
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 
-/*
- * Chat Controller listens for chat topic and responds with a message.
- *
- * @Author Jay Sridhar
- */
 @Controller
 public class ChatController 
 {

@@ -19,6 +19,8 @@ public interface ILuxuryUserDao {
 	 
 	 User getDetail(String token);
 	 
+	 User getDetailbyUserName(String userName);
+	 
 	 User getDetail(String token,String passWord);
 	 
 }

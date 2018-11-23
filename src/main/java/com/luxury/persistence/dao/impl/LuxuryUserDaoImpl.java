@@ -121,4 +121,17 @@ public class LuxuryUserDaoImpl extends GeneratedIdDAOHbnImpl<User> implements IL
 		}
 		return null;
 	}
+
+	@Override
+	public User getDetailbyUserName(String userName) {
+		Criteria criteria = null;
+		try {
+			criteria = getSession().createCriteria(User.class);
+			criteria.add(Restrictions.eq("userName", userName));
+			return (User) criteria.uniqueResult();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
