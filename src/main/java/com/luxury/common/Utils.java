@@ -915,6 +915,13 @@ public class Utils {
     }
   }
 
+  public static String generateSecurePassWord(int numberCharacter){
+	  String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	  String pwd = RandomStringUtils.random( numberCharacter, characters );
+	  return pwd;
+  }
+  
+  
   public static void main(String[] args) throws Exception {
     // String pass = RandomStringUtils.random(32, 0, 0, true, true, null,new
     // SecureRandom());

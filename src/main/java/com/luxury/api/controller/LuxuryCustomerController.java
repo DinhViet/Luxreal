@@ -22,6 +22,8 @@ import com.luxury.model.CreateUserResponse;
 import com.luxury.model.DetailUserResponse;
 import com.luxury.model.LoginRequest;
 import com.luxury.model.LoginResponse;
+import com.luxury.model.ResetPassWordRequest;
+import com.luxury.model.ResetPassWordResponse;
 import com.luxury.model.Status;
 import com.luxury.model.UpdatePassWordRequest;
 import com.luxury.model.UpdateUserRequest;
@@ -141,10 +143,37 @@ public class LuxuryCustomerController {
 			Status status = new Status();
 			status.setRespCode(ErrorMessages.UNKNOW_ERROR.code);
 			status.setDescription(ErrorMessages.UNKNOW_ERROR.message);
+			response.setStatus(status);
+			return response;
+		}
+	}
+	
+	@RequestMapping(value = "/get-other-user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public DetailUserResponse getOtherUser(@RequestBody LoginRequest request,HttpServletRequest httpServletRequest) {
+		DetailUserResponse response = null;
+		try {
+			
+			logger.info("Request getDetailUser  : "+ LoggingUtils.writeObjectAsJson(request));
+			
+			response = userService.getOtherUser(request);
+			
+			return response;
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+			response = new DetailUserResponse();
+			Status status = new Status();
+			status.setRespCode(ErrorMessages.UNKNOW_ERROR.code);
+			status.setDescription(ErrorMessages.UNKNOW_ERROR.message);
 			response.setStatus(status);;
 			return response;
 		}
 	}
+	
+	
+	
 	
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -188,6 +217,29 @@ public class LuxuryCustomerController {
 			return response;
 		}
 	}
+	
+	
+	@RequestMapping(value = "/forgot-password", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResetPassWordResponse updatePassWord(@RequestBody ResetPassWordRequest request,HttpServletRequest httpServletRequest) {
+		ResetPassWordResponse response = null;
+		try {
+			logger.info("forgot-password : "+ LoggingUtils.writeObjectAsJson(request));
+			
+			response = userService.resetPassWord(request);
+			
+			return response;
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+			response = new ResetPassWordResponse();
+			response.setRespCode(ErrorMessages.UNKNOW_ERROR.code);
+			response.setDescription(ErrorMessages.UNKNOW_ERROR.message);
+			return response;
+		}
+	}
+	
 	
 	
 	

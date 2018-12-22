@@ -30,6 +30,7 @@ public class Product extends GeneratedIdEntry{
 	
 	public static final String STATUS_SELL = "SELL";
 	public static final String STATUS_REJECT = "REJECT";
+	public static final String STATUS_SOLD = "SOLD";
 	
 	@Column(name = "product_code", length = 32)
 	private String productCode;
@@ -42,6 +43,12 @@ public class Product extends GeneratedIdEntry{
 	
 	@Column(name = "category", length = 12)
 	private String category;
+	
+	@Column(name = "brand_name", length = 64)
+	private String brandName;
+	
+	@Column(name = "tag", length = 64)
+	private String tag;
 	
 	@Column(name = "location", length = 64)
 	private String location;
@@ -143,8 +150,20 @@ public class Product extends GeneratedIdEntry{
 	public void setImageProduct(Set<ImageProduct> imageProduct) {
 		this.imageProduct = imageProduct;
 	}
-	
-	
-	
 
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
 }

@@ -31,6 +31,12 @@ public class CreateProductRequest {
 	@NotBlank(message = "description không được null")
 	private String description;
 	
+	@Size(max = 64, message = "brandName")
+	private String brandName;
+	
+	@Size(max = 64, message = "tag")
+	private String tag;
+	
 	@Size(max = 6, message = "currency độ dài không hợp lệ!")
 	@NotBlank(message = "currency không được null")
 	private String currency;
@@ -99,6 +105,22 @@ public class CreateProductRequest {
 
 	public void setImages(List<Image> images) {
 		this.images = images;
+	}
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
 	}
 	
 }

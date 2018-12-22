@@ -1,11 +1,11 @@
 package com.luxury.model;
 
-public class Status {
+public class ResultResponse {
 
 	private String respCode;
 	
 	private String description;
-	
+
 	public String getRespCode() {
 		return respCode;
 	}
@@ -21,6 +21,7 @@ public class Status {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
 	
 	
 }

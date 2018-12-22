@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,14 @@ import org.springframework.stereotype.Service;
 import com.luxury.common.ErrorMessages;
 import com.luxury.endpoint.ILuxuryProductService;
 import com.luxury.model.CreateProductRequest;
-import com.luxury.model.CreateProductResponse;
+import com.luxury.model.DeleteProductRequest;
 import com.luxury.model.GetListProductResponse;
 import com.luxury.model.GetProductRequest;
 import com.luxury.model.Image;
 import com.luxury.model.ProductJson;
+import com.luxury.model.ResultResponse;
 import com.luxury.model.Status;
+import com.luxury.model.UpdateStatusRequest;
 import com.luxury.model.UserProduct;
 import com.luxury.persistence.dao.ILuxuryProductDao;
 import com.luxury.persistence.dao.ILuxuryUserDao;
@@ -38,16 +41,18 @@ public class LuxuryProductServiceImpl implements ILuxuryProductService{
 	ILuxuryProductDao productDao;
 	
 	@Override
-	public CreateProductResponse createProduct(CreateProductRequest request) throws Exception {
-		CreateProductResponse response = new CreateProductResponse();
+	public ResultResponse createProduct(CreateProductRequest request) throws Exception {
+		ResultResponse response = new ResultResponse();
 		
 		User user = userDao.getDetail(request.getToken());
 		if(user!=null){
 			Product product = new Product();
 			product.setActive(true);
+			product.setBrandName(request.getBrandName());
 			product.setAmount(request.getAmount());
 			product.setCategory(request.getCategory());
 			product.setCreationDate(new Date());
+			product.setTag(request.getTag());
 			product.setLastUpdate(new Date());
 			product.setCurrency(request.getCurrency());
 			product.setDescription(request.getDescription());
@@ -108,6 +113,8 @@ public class LuxuryProductServiceImpl implements ILuxuryProductService{
 			productJson.setImages(listImages);
 			BeanUtils.copyProperties(product, productJson);
 			productJson.setProductName(product.getProductName());
+			productJson.setProductId(""+product.getId());
+			productJson.setStatus(product.getStatus());
 			UserProduct user = new UserProduct();
 			User users = product.getUsers();
 			user.setName(users.getName());
@@ -120,5 +127,63 @@ public class LuxuryProductServiceImpl implements ILuxuryProductService{
 		response.setProducts(list);
 		response.setStatus(status);
 		return response;
+	}
+
+	@Override
+	public ResultResponse DeleteProduct(DeleteProductRequest request) throws Exception {
+		ResultResponse response  = new ResultResponse();
+		if(StringUtils.isEmpty(request.getProductId()) ||  StringUtils.isEmpty(request.getToken())){
+			response.setRespCode(ErrorMessages.INVALID_PARAM.code);
+			response.setDescription(ErrorMessages.INVALID_PARAM.message);
+			return response;
+		}
+		User user = userDao.getDetail(request.getToken());
+		if(user!=null){
+			boolean delete = productDao.deleteProduct(request);
+			if(delete){
+				response.setRespCode(ErrorMessages.SUCCESS.code);
+				response.setDescription(ErrorMessages.SUCCESS.message);
+			}else{
+				response.setRespCode(ErrorMessages.UNKNOW_ERROR.code);
+				response.setDescription(ErrorMessages.UNKNOW_ERROR.message);
+			}
+		}else{
+			response.setRespCode(ErrorMessages.INVALID_TOKEN.code);
+			response.setDescription(ErrorMessages.INVALID_TOKEN.message);
+			return response;
+		}
+		
+		return response;
+	}
+
+	@Override
+	public Status updateStatus(UpdateStatusRequest request) throws Exception {
+		Status status = new Status();
+		if(StringUtils.isEmpty(request.getProductId()) || StringUtils.isEmpty(request.getToken()) || StringUtils.isEmpty(request.getStatus())){
+			status.setRespCode(ErrorMessages.INVALID_PARAM.code);
+			status.setDescription(ErrorMessages.INVALID_PARAM.message);
+			return status;
+		}
+		
+		User user = userDao.getDetail(request.getToken());
+		if(user!=null){
+			
+			Product product = productDao.getProductById(request.getProductId());
+			if(product!=null){
+				product.setStatus(request.getStatus());
+				productDao.updateProduct(product);
+				status.setRespCode(ErrorMessages.SUCCESS.code);
+				status.setDescription(ErrorMessages.SUCCESS.message);
+			}else{
+				status.setRespCode(ErrorMessages.INVALID_PARAM.code);
+				status.setDescription(ErrorMessages.INVALID_PARAM.message);
+				return status;
+			}
+		}else{
+			status.setRespCode(ErrorMessages.INVALID_TOKEN.code);
+			status.setDescription(ErrorMessages.INVALID_TOKEN.message);
+			return status;
+		}
+		return status;
 	}
 }

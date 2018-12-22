@@ -5,6 +5,8 @@ import java.util.List;
 
 public class ProductJson {
 	
+	private String productId;
+	
 	private String productName;
 	
 	private BigDecimal amount;
@@ -16,6 +18,8 @@ public class ProductJson {
 	private String description;
 	
 	private String currency;
+	
+	private String status;
 	
 	private List<Image> images;
 	
@@ -83,6 +87,22 @@ public class ProductJson {
 
 	public void setUser(UserProduct user) {
 		this.user = user;
+	}
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 	

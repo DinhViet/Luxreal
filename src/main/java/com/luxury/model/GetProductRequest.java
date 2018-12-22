@@ -10,6 +10,10 @@ public class GetProductRequest {
 	
 	private String category;
 	
+	private String brandName;
+	
+	private String tag;
+	
 	private String location;
 
 	public int getLimit() {
@@ -51,5 +55,23 @@ public class GetProductRequest {
 	public void setToken(String token) {
 		this.token = token;
 	}
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+	
+	
 	
 }

@@ -11,6 +11,8 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.luxury.common.ErrorMessages;
@@ -23,6 +25,8 @@ import com.luxury.model.Image;
 import com.luxury.model.LoginRequest;
 import com.luxury.model.LoginResponse;
 import com.luxury.model.ProductOfUser;
+import com.luxury.model.ResetPassWordRequest;
+import com.luxury.model.ResetPassWordResponse;
 import com.luxury.model.Status;
 import com.luxury.model.UpdatePassWordRequest;
 import com.luxury.model.UpdateUserRequest;
@@ -43,6 +47,9 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 
 	@Autowired
 	SysSequenceDAO sysSequenceDAO;
+	
+	@Autowired
+    public JavaMailSender emailSender;
 
 	@Override
 	public CreateUserResponse createUser(CreateUserRequest request) {
@@ -127,21 +134,13 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 	public DetailUserResponse getDetail(LoginRequest request) {
 		DetailUserResponse response = new DetailUserResponse();
 		Status status = new Status();
-		if (StringUtils.isEmpty(request.getToken()) || StringUtils.isEmpty(request.getUserName())) {
+		if (StringUtils.isEmpty(request.getToken())) {
 			status.setRespCode(ErrorMessages.INVALID_PARAM.code);
 			status.setDescription(ErrorMessages.INVALID_PARAM.message);
 			response.setStatus(status);
 			return response;
 		}
-		User userLogin = userDao.getDetail(request.getToken());
-		if(userLogin==null){
-			status.setRespCode(ErrorMessages.INVALID_TOKEN.code);
-			status.setDescription(ErrorMessages.INVALID_TOKEN.message);
-			response.setStatus(status);
-			return response;
-		}
-		
-		User user = userDao.getDetailbyUserName(request.getUserName());
+		User user = userDao.getDetail(request.getToken());
 		if (user != null) {
 			UserDetail userDetail = new UserDetail();
 			userDetail.setDateOfBirth(user.getDateOfBirth());
@@ -252,6 +251,104 @@ public class LuxuryUserServiceImpl implements ILuxuryUserService {
 		}else{
 			response.setRespCode(ErrorMessages.INVALID_TOKEN_OR_PASSWORD.code);
 			response.setDescription(ErrorMessages.INVALID_TOKEN_OR_PASSWORD.message);
+		}
+		return response;
+	}
+
+	@Override
+	public ResetPassWordResponse resetPassWord(ResetPassWordRequest request) {
+		ResetPassWordResponse response = new ResetPassWordResponse();
+		if(StringUtils.isEmpty(request.getEmail())){
+			response.setRespCode(ErrorMessages.INVALID_PARAM.code);
+			response.setDescription(ErrorMessages.INVALID_PARAM.message);
+			return response;
+		}
+		User user = userDao.getUser(request.getUserName(), request.getEmail());
+		
+		if(user!=null){
+			String passWord =Utils.generateSecurePassWord(6);
+			String passEncrypt = Utils.encryptSHA256(passWord);
+			String token = Utils.genUId();
+			user.setPassWord(passEncrypt);
+			user.setToken(token);
+			boolean save = userDao.updateUser(user);
+			if(save){
+				SimpleMailMessage message = new SimpleMailMessage(); 
+		        message.setTo(request.getEmail()); 
+		        message.setSubject("Reset PassWord"); 
+		        message.setText(passWord);
+		        emailSender.send(message);
+		        
+				response.setRespCode(ErrorMessages.SUCCESS.code);
+				response.setDescription(ErrorMessages.SUCCESS.message);
+			}else{
+				response.setRespCode(ErrorMessages.UNKNOW_ERROR.code);
+				response.setDescription(ErrorMessages.UNKNOW_ERROR.message);
+			}
+		}else{
+			response.setRespCode(ErrorMessages.INVALID_USERNAME_EMAIL.code);
+			response.setDescription(ErrorMessages.INVALID_USERNAME_EMAIL.message);
+		}
+		return response;
+	}
+
+	@Override
+	public DetailUserResponse getOtherUser(LoginRequest request) {
+		DetailUserResponse response = new DetailUserResponse();
+		Status status = new Status();
+		
+		if (StringUtils.isEmpty(request.getUserName()) || StringUtils.isEmpty(request.getToken())){
+			status.setRespCode(ErrorMessages.INVALID_PARAM.code);
+			status.setDescription(ErrorMessages.INVALID_PARAM.message);
+			response.setStatus(status);
+			return response;
+		}
+		
+		User userLogin = userDao.getDetail(request.getToken());
+		if(userLogin==null){
+			status.setRespCode(ErrorMessages.INVALID_TOKEN.code);
+			status.setDescription(ErrorMessages.INVALID_TOKEN.message);
+			response.setStatus(status);
+			return response;
+		}
+		
+		User user = userDao.getDetailbyUserName(request.getUserName());
+		if (user != null) {
+			UserDetail userDetail = new UserDetail();
+			userDetail.setDateOfBirth(user.getDateOfBirth());
+			userDetail.setUrlIcon(user.getUrlIcon());
+			userDetail.setRatePoint(user.getRatePoint());
+			userDetail.setUserName(user.getUserName());
+			userDetail.setName(user.getName());
+			userDetail.setWebsite(user.getWebsite());
+			userDetail.setDescription(user.getDescription());
+			userDetail.setPhoneNumber(user.getPhoneNumber());
+			List<ProductOfUser> listProductJ = new ArrayList<>();
+			Set<Product> listProduct = user.getProduct();
+			for (Product product : listProduct) {
+				ProductOfUser productJ = new ProductOfUser();
+				BeanUtils.copyProperties(product, productJ);
+				productJ.setProductName(product.getProductName());
+				List<Image> listImages = new ArrayList<>();
+				Set<ImageProduct> setimage = product.getImageProduct();
+				for (ImageProduct imageProduct : setimage) {
+					Image image = new Image();
+					image.setImage_hd(imageProduct.getUrlImage());
+					image.setImage_sd(imageProduct.getUrlImageSD());
+					listImages.add(image);
+				}
+				productJ.setImages(listImages);
+				listProductJ.add(productJ);
+			}
+			userDetail.setProducts(listProductJ);
+			status.setRespCode(ErrorMessages.SUCCESS.code);
+			status.setDescription(ErrorMessages.SUCCESS.message);
+			response.setStatus(status);
+			response.setUser(userDetail);
+		} else {
+			status.setRespCode(ErrorMessages.INVALID_PARAM.code);
+			status.setDescription(ErrorMessages.INVALID_PARAM.message);
+			response.setStatus(status);
 		}
 		return response;
 	}

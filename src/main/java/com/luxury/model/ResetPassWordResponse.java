@@ -1,6 +1,6 @@
 package com.luxury.model;
 
-public class CreateProductResponse {
+public class ResetPassWordResponse {
 
 	private String respCode;
 	
@@ -21,7 +21,4 @@ public class CreateProductResponse {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
-	
 }
