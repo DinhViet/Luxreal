@@ -12,6 +12,6 @@ ADD     bin/cmd bin/cmd
 ADD     target/java-app/BOOT-INF/lib BOOT-INF/lib
 ADD     target/java-app .
 
-EXPOSE  9988
+EXPOSE  8080
 
 CMD     ["bin/cmd"]
