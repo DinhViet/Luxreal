@@ -10,7 +10,7 @@ ENV     NEW_RELIC_LOG STDOUT
 
 ADD     bin/cmd bin/cmd
 ADD     target/java-app/BOOT-INF/lib BOOT-INF/lib
-ADD     target/java-app .
+ADD     target/java-app
 
 EXPOSE  8080
 
